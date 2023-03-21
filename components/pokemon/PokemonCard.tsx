@@ -24,12 +24,11 @@ export const PokemonCard: FC<Props> = ({ pokemon }) => {
                 isPressable
                 onClick={onClick}
             >
-                <Card.Body css={{ p: 1 }}>
+                <Card.Body css={{ p: 1, pt: 10, width: '100%' }}>
                     <Card.Image
                         src={img}
                         objectFit="cover"
-                        width={90}
-                        height={90}
+                        width={100}
                         alt={name}
                     />
                 </Card.Body>
