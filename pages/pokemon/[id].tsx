@@ -1,7 +1,6 @@
 import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
-import { useEffect, useState } from 'react';
-import { pokeApi } from '../../api';
+import { useState } from 'react';
 import { Layout } from "../../components/layouts";
 import { Pokemon } from '../../interfaces';
 import { localFavorites } from '../../utils';
