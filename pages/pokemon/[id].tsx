@@ -1,8 +1,11 @@
 import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import { useEffect, useState } from 'react';
 import { pokeApi } from '../../api';
 import { Layout } from "../../components/layouts";
 import { Pokemon } from '../../interfaces';
+import { localFavorites } from '../../utils';
+import confetti from 'canvas-confetti';
 
 interface Props {
     pokemon: Pokemon;
@@ -10,8 +13,30 @@ interface Props {
 
 const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 
+    const [isInFavorites, setIsInFavorites] = useState(localFavorites.existInFavorites(pokemon.id));
+
+    const onToggleFavorite = () => {
+        localFavorites.toggleFavorite(pokemon.id);
+        setIsInFavorites(!isInFavorites);
+
+        if (!isInFavorites) {
+            confetti({
+                zIndex: 999,
+                particleCount: 100,
+                spread: 160,
+                angle: -100,
+                origin: {
+                    x: 0.5,
+                    y: 0
+                }
+            })
+        }
+    }
+
+
+
     return (
-        <Layout title="Algún pokémon">
+        <Layout title={`Pokémon ${pokemon.name}`}>
             <Grid.Container css={{ marginTop: '5px' }} gap={2}>
                 <Grid xs={12} sm={4}>
                     <Card isHoverable css={{ padding: '30px' }}>
@@ -32,9 +57,10 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                             <Text h1 transform='capitalize'>{pokemon.name}</Text>
                             <Button
                                 color="gradient"
-                                ghost
+                                ghost={!isInFavorites}
+                                onClick={onToggleFavorite}
                             >
-                                Guardar en favoritos
+                                {isInFavorites ? 'Eliminar de favoritos' : 'Guardar en favoritos'}
                             </Button>
                         </Card.Header>
                         <Card.Body>
@@ -93,7 +119,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { id } = params as { id: string };
 
     const { data } = await pokeApi.get<Pokemon>(`/pokemon/${id}`);
-
 
     return {
         props: {
